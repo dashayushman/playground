@@ -80,6 +80,43 @@ def bubblesort(data, reverse=False, key=None):
     return data
 
 
+def heapify(data, heap_size, i, reverse=False, key=None):
+    condition = (lambda x, y: x < y) if reverse else (lambda x, y: x > y)
+    left = 2 * i + 1
+    right = 2 * i + 2
+    root = i
+
+    if left < heap_size:
+        left_val = key(data[left]) if key else data[left]
+        root_val = key(data[root]) if key else data[root]
+        if condition(left_val, root_val):
+            root = left
+    if right < heap_size:
+        right_val = key(data[right]) if key else data[right]
+        root_val = key(data[root]) if key else data[root]
+        if condition(right_val, root_val):
+            root = right
+    if root != i:
+        data[i], data[root]= data[root], data[i]
+        heapify(data, heap_size, root, reverse, key)
+
+
+def build_heap(data, reverse=False, key=None):
+    heap_size = len(data)
+    for i in range(heap_size // 2, -1, -1):
+        heapify(data, heap_size, i, reverse, key)
+
+
+def heapsort(data, reverse=False, key=None):
+    heapsize = len(data)
+    build_heap(data, reverse, key)
+    for i in range(heapsize - 1, 0, -1):
+        data[i], data[0] = data[0], data[i]
+        heapsize -= 1
+        heapify(data, heapsize, 0, reverse, key)
+    return data
+
+
 class SortingTests(unittest.TestCase):
     def test_quick_sort(self):
         
@@ -130,3 +167,16 @@ class SortingTests(unittest.TestCase):
                              bubblesort([(1, 20), (45, 100), (-1, -24), (-24, 356)], reverse=False, key=lambda x: x[1]))
         self.assertListEqual(list(reversed([(-1, -24), (1, 20), (45, 100), (-24, 356)])),
                              bubblesort([(1, 20), (45, 100), (-1, -24), (-24, 356)], reverse=True, key=lambda x: x[1]))
+
+
+    def test_heapsort(self):
+        self.assertListEqual([-1, 2, 45, 110], heapsort([-1, 2, 45, 110], reverse=False))
+        self.assertListEqual(list(reversed([-1, 2, 45, 110])), heapsort([-1, 2, 45, 110], reverse=True))
+        self.assertListEqual([], heapsort([]))
+        self.assertListEqual(list(range(2, 100)), heapsort(list(range(99, 1, -1))))
+        self.assertListEqual([(-24, 356), (-1, -24), (1, 20), (45, 100)],
+                             heapsort([(1, 20), (45, 100), (-1, -24), (-24, 356)], key=lambda x: x[0]))
+        self.assertListEqual([(-1, -24), (1, 20), (45, 100), (-24, 356)],
+                             heapsort([(1, 20), (45, 100), (-1, -24), (-24, 356)], reverse=False, key=lambda x: x[1]))
+        self.assertListEqual(list(reversed([(-1, -24), (1, 20), (45, 100), (-24, 356)])),
+                             heapsort([(1, 20), (45, 100), (-1, -24), (-24, 356)], reverse=True, key=lambda x: x[1]))
