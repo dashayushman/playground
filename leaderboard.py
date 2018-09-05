@@ -38,7 +38,7 @@ def climbingLeaderboard(scores, alice):
     for x in alice:
         while len(scores) > 0 and scores[-1] <= x:
             del scores[-1]
-        results.append(len(scores) + 1))
+        results.append(len(scores) + 1)
     return results
 
 
