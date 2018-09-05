@@ -9,3 +9,10 @@ print(list(mylist))
 mylist = sorted(mylist, key=lambda k: k['name'].lower())
 
 print(list(mylist))
+
+
+from  functools import reduce
+from operator import add
+
+print(reduce(add, range(1, 6)))
+print(int((5 * (1 + 5))/2))
